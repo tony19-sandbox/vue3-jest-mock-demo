@@ -1,29 +1,53 @@
-# vue3-test1
+Given the service file:
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
+```js
+// @/service.js
+export const getApolloApiData = async () => axios.get(...)
 ```
 
-### Compiles and minifies for production
-```
-yarn build
+which is used in `HelloWorld.vue`:
+
+```js
+// @/components/HelloWorld.vue
+import { getApolloApiData } from '@/service'
+
+export default {
+  setup() {
+    const threatList = ref([])
+
+    const getThreats = async () => {
+      const result = await getApolloApiData('query')
+      threatList.value = result.data.threats
+    }
+
+    return {
+      threatList,
+      getThreats
+    }
+  }
+}
 ```
 
-### Run your unit tests
-```
-yarn test:unit
-```
+this is how you could mock the Axios call:
 
-### Lints and fixes files
-```
-yarn lint
-```
+```js
+import { shallowMount } from '@vue/test-utils'
+import HelloWorld from '@/components/HelloWorld.vue'
+jest.mock('@/service', () => {
+  return {
+    getApolloApiData: () => ({
+      data: {
+        threats: [{ id: 123456 }]
+      }
+    })
+  }
+})
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+describe('HelloWorld.vue', () => {
+  it('gets threats', async () => {
+    const wrapper = shallowMount(HelloWorld)
+    await wrapper.vm.getThreats()
+    expect(wrapper.vm.threatList).toContainEqual({ id: 123456 })
+  })
+})
+```
