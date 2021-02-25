@@ -1,1 +1,1 @@
-export const getApolloApiData = async () => ({ data: [{ id: 1 }] })
+export const getApolloApiData = async () => ({ data: [{ id: 1 }] }) // normally an axios call
