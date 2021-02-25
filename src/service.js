@@ -1,0 +1,1 @@
+export const getApolloApiData = async () => ({ data: [{ id: 1 }] })

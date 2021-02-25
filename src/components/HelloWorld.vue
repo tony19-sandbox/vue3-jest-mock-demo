@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -32,10 +31,39 @@
 </template>
 
 <script>
+import { getApolloApiData } from '@/service'
+import { ref } from 'vue'
+
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  setup() {
+    const threatList = ref([])
+
+    // get all threats
+    const getThreats = async () => {
+        const getThreatsQuery = `
+            query {
+                threats {
+                    short_description
+                    threat_level
+                }
+            }
+        `
+
+        try {
+            const result = await getApolloApiData(getThreatsQuery)
+            if (result) {
+                threatList.value = result.data.threats
+            }
+        } catch (error) {
+            console.log('Error receiving threats data', error)
+        }
+    }
+
+    return {
+      threatList,
+      getThreats
+    }
   }
 }
 </script>

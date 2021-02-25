@@ -1,12 +1,19 @@
 import { shallowMount } from '@vue/test-utils'
 import HelloWorld from '@/components/HelloWorld.vue'
+jest.mock('@/service', () => {
+  return {
+    getApolloApiData: () => ({
+      data: {
+        threats: [{ id: 123456 }]
+      }
+    })
+  }
+})
 
 describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      props: { msg }
-    })
-    expect(wrapper.text()).toMatch(msg)
+  it('gets threats', async () => {
+    const wrapper = shallowMount(HelloWorld)
+    await wrapper.vm.getThreats()
+    expect(wrapper.vm.threatList).toContainEqual({ id: 123456 })
   })
 })

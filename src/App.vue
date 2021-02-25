@@ -1,15 +1,20 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <HelloWorld />
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
+const { utils } = require("@/assets/js/utils.js");
 
+console.log({utils})
 export default {
   name: 'App',
   components: {
     HelloWorld
+  },
+  mounted() {
+    console.log('util', utils.someDateFunction())
   }
 }
 </script>
